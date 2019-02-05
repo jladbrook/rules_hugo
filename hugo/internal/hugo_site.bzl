@@ -1,7 +1,7 @@
 def copy_to_dir(ctx, srcs, dirname):
     outs = []
     for i in srcs:
-        o = ctx.actions.declare_file(dirname + "/" + i.basename)
+        o = ctx.actions.declare_file("/".join([dirname] + i.short_path.split("/")[1:]))
         ctx.action(
             inputs = [i],
             outputs = [o],
