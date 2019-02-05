@@ -43,7 +43,12 @@ def _hugo_site_impl(ctx):
                 o_filename = "/".join(["themes", theme.name] + i.short_path.split("/")[2:])
             else:
                 o_filename = "/".join(["themes", theme.name, i.short_path])
+            if o_filename.split("/")[2] == "exampleSite":
+                continue
+
             o = ctx.actions.declare_file(o_filename)
+            if o_filename.split("/")[2] == "i18n":
+                print(o)
             ctx.action(
                 inputs = [i],
                 outputs = [o],
@@ -78,6 +83,7 @@ def _hugo_site_impl(ctx):
         outputs = [hugo_outputdir],
     )
 
+    print(depset([hugo_outputdir]))
     return [DefaultInfo(files = depset([hugo_outputdir]))]
 
 hugo_site = rule(
@@ -108,6 +114,10 @@ hugo_site = rule(
         ),
         # Files to be included in the data/ subdir
         "data": attr.label_list(
+            allow_files = True,
+        ),
+        # Files to be included in the i18n/ subdir
+        "i18n": attr.label_list(
             allow_files = True,
         ),
         # The hugo executable
